@@ -2,33 +2,62 @@
     import { onMount } from 'svelte';
 
     let article: HTMLElement;
-    let children_with_text: Element[] = [];
 
     onMount(async () => {
-		set_children_with_text(article);
+        initialize_page();
 	});
 
-    function set_children_with_text( element: Element ): void {
-        if(element.childElementCount) {
-            for (const child of element.children) {
-                set_children_with_text(child);
-            }
-            return;
-        }          
-        children_with_text.push(element);
+    function initialize_page(): void {
+        let children_with_text: Element[] = [];
+
+        set_children_with_text( article );
+        hide_text();
+
+        function set_children_with_text( element: Element ): void {
+            if(element.childElementCount) {
+                for (const child of element.children) {
+                    set_children_with_text(child);
+                }
+                return;
+            }          
+            children_with_text.push(element);
+        }
+
+        function hide_text(): void {
+            let text: String = '';
+            children_with_text.forEach( child => {
+                text = child.textContent ? child.textContent: '';
+                const words = text.split(' ');
+
+                child.innerHTML = '';
+                words.forEach( w => {
+                    child.innerHTML += `<span class="word hidden">${w}</span>`;
+                });
+            });
+        }
     }
 
-    function hide_text(): void {
-        let text: String = '';
-        children_with_text.forEach( child => {
-            text = child.textContent ? child.textContent: '';
-            const words = text.split(' ');
+    export function try_hunch( word: string ): void {
+        if(does_word_exist(word)) {
+            console.log(`A palavra "${word}" exist`);
+            return;
+        }
+        console.log(`A palavra "${word}" NÃO exist`);
+    }
 
-            child.innerHTML = '';
-            words.forEach( w => {
-                child.innerHTML += `<span class="word hidden">${w}</span>`;
-            });
+    function does_word_exist(word: string): boolean {
+        const all_words: string[] = [];
+        const hdn_words = document.querySelectorAll('.hidden');
+
+        hdn_words.forEach( w => {
+            const w_text = w.textContent == null ? '': w.textContent.replace(/[\])}[{(]/g, '').replaceAll(':', '').replaceAll(';', '').replaceAll("'", '').replaceAll('"', '').replaceAll('·', '').replaceAll(',', '').replaceAll('—', '').replaceAll('.', '').replaceAll('<', '').replaceAll('>', '').replaceAll('º', '').replaceAll('“', '').replaceAll('”', '');
+
+            if( !all_words.includes(w_text) ) {
+                console.log(w_text);
+                all_words.push(w_text.toLocaleLowerCase());
+            }
         });
+        return all_words.includes(word.toLocaleLowerCase());
     }
 </script>
 
@@ -86,6 +115,12 @@
     }
     article > * {
         margin-bottom: 10px;
+    }
+    :global(.hidden) {
+        user-select: none;
+        background-color: var(--hidden-word);
+        color: var(--hidden-word);
+        margin-right: 5px;
     }
     ul {
         padding-left: 10px;

@@ -5,8 +5,11 @@ import type { Client } from 'tmi.js';
 import twitch from 'tmi.js';
 
 const tw_channel = get_twitch_connection('femeuc');
-tw_channel.on('message', (channel, tags, message, self) => {
+let article: Article;
 
+tw_channel.on('message', (channel, tags, message, self) => {
+    if(!article) return;
+    article.try_hunch(message);
 });
 
 function get_twitch_connection( channel_name: string ): Client {
@@ -20,7 +23,7 @@ function get_twitch_connection( channel_name: string ): Client {
 
 <div class="index">
     <div class="wrapper">
-    <Article />
+    <Article bind:this={article} />
     </div>
     <div class="wrapper">
     <GameHistory />
