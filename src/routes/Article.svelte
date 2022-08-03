@@ -82,22 +82,20 @@
 
 <style>
     :root {
-        --text-color: hsl(0, 50%, 100%);
-        --background-color: hsl(0, 50%, 0%);
-        --font-size: 18px;
-
         --hidden-word: hsl(0, 0%, 50%);
     }
-    article { 
-        background-color: var(--background-color);
-        color: var(--text-color);
-        font-size: var(--font-size);
+    article > * {
+        margin-bottom: 10px;
     }
-    :global(.hidden) {
-        padding: 5px;
-        margin-right: 5px;
-        background-color: var(--hidden-word);
-        color: var(--hidden-word);
-        user-select: none;
+    ul {
+        padding-left: 10px;
+        list-style-position: inside;
+    }
+    table, th, td {
+        border: 1px solid var(--text-color);
+        padding: 5px 10px;
+    }
+    table {
+        border-collapse: collapse;
     }
 </style>
