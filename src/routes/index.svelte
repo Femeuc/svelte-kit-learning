@@ -1,8 +1,23 @@
 <script lang='ts'>
-    import Article from './Article.svelte';
-    import GameHistory from './GameHistory.svelte';
+import Article from './Article.svelte';
+import GameHistory from './GameHistory.svelte';
+import type { Client } from 'tmi.js';
+import twitch from 'tmi.js';
 
+const tw_channel = get_twitch_connection('femeuc');
+tw_channel.on('message', (channel, tags, message, self) => {
+
+});
+
+function get_twitch_connection( channel_name: string ): Client {
+    const client = new twitch.Client({
+        channels: [ channel_name ]
+    });
+    client.connect();
+    return client;
+}
 </script>
+
 <div class="index">
     <div class="wrapper">
     <Article />
