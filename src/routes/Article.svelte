@@ -7,6 +7,7 @@
 
     let article: HTMLElement;
     let words: word_references;
+    let hightlighted_word: string = '';
 
     onMount(async () => {
         initialize_page();
@@ -73,6 +74,16 @@
         }
         return -1;
     }
+    export function hightlight_word(word: string): void {
+        words[hightlighted_word].forEach( w => {
+            w.classList.remove('highlight');
+        });
+
+        words[word].forEach( w => {
+            w.classList.add('highlight');
+        });
+        hightlighted_word = word;
+    }
 </script>
 
 <article  bind:this={article}>
@@ -135,6 +146,10 @@
         background-color: var(--hidden-word);
         color: var(--hidden-word);
         margin-right: 5px;
+    }
+    :global(.highlight) {
+        color: yellow !important;
+        text-shadow: 0px 0px 20px #ffffff;
     }
     ul {
         padding-left: 10px;

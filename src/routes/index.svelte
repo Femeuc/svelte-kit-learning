@@ -7,6 +7,7 @@ import twitch from 'tmi.js';
 const tw_channel = get_twitch_connection('femeuc');
 let article: Article;
 let game_history: GameHistory;
+let word_to_be_highlighed: string = '';
 
 tw_channel.on('message', (channel, tags, message, self) => {
     if(!article || !game_history) return;
@@ -28,6 +29,13 @@ function get_twitch_connection( channel_name: string ): Client {
     client.connect();
     return client;
 }
+
+$: {
+    if(article) {
+        article.hightlight_word(word_to_be_highlighed);
+    }
+}
+
 </script>
 
 <div class="index">
@@ -35,7 +43,7 @@ function get_twitch_connection( channel_name: string ): Client {
     <Article bind:this={article} />
     </div>
     <div class="wrapper">
-    <GameHistory bind:this={game_history} />
+    <GameHistory bind:this={game_history} bind:word_to_be_highlighted={word_to_be_highlighed}/>
     </div>
 </div>
 

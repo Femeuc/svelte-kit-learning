@@ -1,8 +1,11 @@
 <script lang='ts'>
+    export let word_to_be_highlighted: string = '';
+
     let ul: HTMLElement;
 
     export function add_player_hunch(player_name: string, hunch: string, ocurrences: number): void {
         const li = document.createElement('LI');
+        li.onmousemove = () => word_to_be_highlighted = hunch;
         li.innerHTML = `
             <span>${player_name}</span>
             <span>${hunch}</span>
@@ -26,6 +29,11 @@
 <style>
     :global(.game_history li) {
         display: flex;
+        cursor: pointer;
+    }
+    :global(.game_history li:hover ) {
+        background-color: rgba(255, 255, 255, 0.3);
+        font-weight: bold;
     }
     :global(.game_history li span:nth-child(1)) {
         width: 35%;
