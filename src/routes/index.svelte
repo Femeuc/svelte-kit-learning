@@ -6,10 +6,19 @@ import twitch from 'tmi.js';
 
 const tw_channel = get_twitch_connection('femeuc');
 let article: Article;
+let game_history: GameHistory;
 
 tw_channel.on('message', (channel, tags, message, self) => {
-    if(!article) return;
-    article.try_hunch(message);
+    if(!article || !game_history) return;
+    
+    if( article.does_word_exist(message) ) {
+        article.reveal_word(message);
+        game_history.add_player_hunch(
+            tags['display-name'] ? tags['display-name'] : 'anônimo', 
+            message, 
+            article.get_word_ocurrences(message)
+        );
+    }
 });
 
 function get_twitch_connection( channel_name: string ): Client {
@@ -26,7 +35,7 @@ function get_twitch_connection( channel_name: string ): Client {
     <Article bind:this={article} />
     </div>
     <div class="wrapper">
-    <GameHistory />
+    <GameHistory bind:this={game_history} />
     </div>
 </div>
 

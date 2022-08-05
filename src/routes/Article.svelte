@@ -2,7 +2,7 @@
     import { onMount } from 'svelte';
 
     interface word_references {
-        [key: string]: Array<Element>
+        [key: string]: Array<HTMLElement>
     }
 
     let article: HTMLElement;
@@ -13,16 +13,16 @@
 	});
 
     function initialize_page(): void {
-        let children_with_text: Element[] = [];
+        let children_with_text: HTMLElement[] = [];
 
         set_children_with_text( article );
         hide_text();
         set_words_variable();
 
-        function set_children_with_text( element: Element ): void {
+        function set_children_with_text( element: HTMLElement ): void {
             if(element.childElementCount) {
                 for (const child of element.children) {
-                    set_children_with_text(child);
+                    set_children_with_text(child as HTMLElement);
                 }
                 return;
             }          
@@ -37,7 +37,7 @@
 
                 child.innerHTML = '';
                 words.forEach( w => {
-                    child.innerHTML += `<span class="word hidden">${w}</span>`;
+                    child.innerHTML += `<span class="word hidden">${w}</span> `;
                 });
             });
         }
@@ -52,18 +52,26 @@
                 if(typeof(all_words[w_text]) != 'object') {
                     all_words[w_text] = [];   
                 }
-                all_words[w_text].push(w);
+                all_words[w_text].push(w as HTMLElement);
             }); 
             words = all_words;
         }
     }
 
-    export function try_hunch( word: string ): void {
-        if( words.hasOwnProperty(word) ) {
-            console.log("Palavra " + word + " existe!");
-            return;
+    export function does_word_exist( word: string ): boolean {
+        return words.hasOwnProperty(word);
+    }
+    export function reveal_word( word: string ): void {
+        words[word].forEach( w => {
+            w.style.color = 'white';
+            w.style.backgroundColor = 'rgba(0,0,0,0)';
+        });
+    }
+    export function get_word_ocurrences(word: string): number {
+        if(words[word]) {
+            return words[word].length;
         }
-        console.log("Palavra " + word + " não existe!");
+        return -1;
     }
 </script>
 
@@ -117,7 +125,7 @@
 
 <style>
     :root {
-        --hidden-word: hsl(0, 0%, 50%);
+        --hidden-word: hsl(0, 0%, 100%);
     }
     article > * {
         margin-bottom: 10px;

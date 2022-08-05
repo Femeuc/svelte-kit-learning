@@ -1,39 +1,43 @@
+<script lang='ts'>
+    let ul: HTMLElement;
+
+    export function add_player_hunch(player_name: string, hunch: string, ocurrences: number): void {
+        const li = document.createElement('LI');
+        li.innerHTML = `
+            <span>${player_name}</span>
+            <span>${hunch}</span>
+            <span>${ocurrences}</span>
+        `;
+        ul?.appendChild(li);
+    }
+</script>
+
 <div class="game_history">
     <h2>Game History</h2>
-    <ul>
+    <ul bind:this={ul}>
         <li class="heading">
             <span>Jogador</span>
             <span>Palavra</span>
             <span>Ocorrências</span>
         </li>
-        <li>
-            <span>Femeuc:</span>
-            <span>Testes</span>
-            <span>2</span>
-        </li>
-        <li>
-            <span>Cibitto:</span>
-            <span>Administração</span>
-            <span>10</span>
-        </li>
     </ul>
 </div>
 
 <style>
-    li {
+    :global(.game_history li) {
         display: flex;
     }
-    li span:nth-child(1) {
+    :global(.game_history li span:nth-child(1)) {
         width: 35%;
     }
-    li span:nth-child(2) {
+    :global(.game_history li span:nth-child(2)) {
         width: 45%;
     }
-    li span:nth-child(3) {
+    :global(.game_history li span:nth-child(3)) {
         width: 20%;
     }
-    li.heading { margin: 5px auto 15px auto; }
-    li.heading > span {
+    :global(.game_history li.heading) { margin: 5px auto 15px auto; }
+    :global(.game_history li.heading > span) {
         width: 100%;
         font-weight: bold;
     }
