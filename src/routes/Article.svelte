@@ -1,7 +1,12 @@
 <script lang='ts'>
     import { onMount } from 'svelte';
 
+    interface word_references {
+        [key: string]: Array<Element>
+    }
+
     let article: HTMLElement;
+    let words: word_references;
 
     onMount(async () => {
         initialize_page();
@@ -12,6 +17,7 @@
 
         set_children_with_text( article );
         hide_text();
+        set_words_variable();
 
         function set_children_with_text( element: Element ): void {
             if(element.childElementCount) {
@@ -35,29 +41,29 @@
                 });
             });
         }
+
+        function set_words_variable() {
+            const all_words: word_references = <word_references>{};
+            const hdn_words = document.querySelectorAll('.hidden');
+
+            hdn_words.forEach( w => {
+                const w_text = w.textContent == null ? '': w.textContent.toLowerCase().replace(/[\])}[{(]/g, '').replaceAll(':', '').replaceAll(';', '').replaceAll("'", '').replaceAll('"', '').replaceAll('·', '').replaceAll(',', '').replaceAll('—', '').replaceAll('.', '').replaceAll('<', '').replaceAll('>', '').replaceAll('º', '').replaceAll('“', '').replaceAll('”', '');
+
+                if(typeof(all_words[w_text]) != 'object') {
+                    all_words[w_text] = [];   
+                }
+                all_words[w_text].push(w);
+            }); 
+            words = all_words;
+        }
     }
 
     export function try_hunch( word: string ): void {
-        if(does_word_exist(word)) {
-            console.log(`A palavra "${word}" exist`);
+        if( words.hasOwnProperty(word) ) {
+            console.log("Palavra " + word + " existe!");
             return;
         }
-        console.log(`A palavra "${word}" NÃO exist`);
-    }
-
-    function does_word_exist(word: string): boolean {
-        const all_words: string[] = [];
-        const hdn_words = document.querySelectorAll('.hidden');
-
-        hdn_words.forEach( w => {
-            const w_text = w.textContent == null ? '': w.textContent.replace(/[\])}[{(]/g, '').replaceAll(':', '').replaceAll(';', '').replaceAll("'", '').replaceAll('"', '').replaceAll('·', '').replaceAll(',', '').replaceAll('—', '').replaceAll('.', '').replaceAll('<', '').replaceAll('>', '').replaceAll('º', '').replaceAll('“', '').replaceAll('”', '');
-
-            if( !all_words.includes(w_text) ) {
-                console.log(w_text);
-                all_words.push(w_text.toLocaleLowerCase());
-            }
-        });
-        return all_words.includes(word.toLocaleLowerCase());
+        console.log("Palavra " + word + " não existe!");
     }
 </script>
 
